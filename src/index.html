@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>静待</title>
+    <script type="module" src="/main.js" defer></script>
+  </head>
+
+  <body>
+    <div class="widget" id="widget">
+      <!-- 窗口缩放手柄（无边框窗口用；四边 + 四角） -->
+      <div class="resizer resizer-n"  data-dir="north"></div>
+      <div class="resizer resizer-s"  data-dir="south"></div>
+      <div class="resizer resizer-e"  data-dir="east"></div>
+      <div class="resizer resizer-w"  data-dir="west"></div>
+      <div class="resizer resizer-nw" data-dir="north-west"></div>
+      <div class="resizer resizer-ne" data-dir="north-east"></div>
+      <div class="resizer resizer-sw" data-dir="south-west"></div>
+      <div class="resizer resizer-se" data-dir="south-east"></div>
+
+      <!-- 标题栏 -->
+      <div class="titlebar" id="titlebar">
+        <img class="title-logo" src="/assets/logo.png" alt="静待" />
+        <span class="title-text">静待</span>
+        <button class="icon-btn" id="lockBtn" title="锁定/解锁窗口">🔓</button>
+        <button class="icon-btn" id="settingsBtn" title="外观设置">⚙</button>
+        <button class="icon-btn close" id="closeBtn" title="关闭">✕</button>
+      </div>
+
+      <!-- 输入区 -->
+      <div class="input-row">
+        <input type="text" class="todo-input" id="todoInput" placeholder="添加一项待办…" maxlength="200" />
+        <button class="add-btn" id="addBtn" title="添加">+</button>
+      </div>
+
+      <!-- 任务列表 -->
+      <ul class="todo-list" id="todoList"></ul>
+
+      <!-- 设置面板 -->
+      <div class="settings-panel hidden" id="settingsPanel">
+        <div class="settings-title">外观设置</div>
+
+        <div class="setting-row opacity-row">
+          <div class="opacity-head">
+            <span class="setting-label">透明度</span>
+            <span class="opacity-value" id="opacityValue">88%</span>
+          </div>
+          <input type="range" class="slider" id="opacitySlider" min="30" max="100" value="88" />
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label">显示标题栏</span>
+          <label class="toggle">
+            <input type="checkbox" id="titleBarToggle" checked />
+            <span class="track"></span>
+            <span class="knob"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label">开机自启</span>
+          <label class="toggle">
+            <input type="checkbox" id="autoStartToggle" />
+            <span class="track"></span>
+            <span class="knob"></span>
+          </label>
+        </div>
+
+        <div class="panel-tip">拖动标题栏可移动窗口</div>
+      </div>
+    </div>
+  </body>
+</html>

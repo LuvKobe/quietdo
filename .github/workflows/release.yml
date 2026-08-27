@@ -1,0 +1,44 @@
+name: Release
+
+# 推送形如 v1.0.0 的 tag 时触发：自动构建 Windows 安装包并发布到 Release
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    permissions:
+      contents: write
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: "./src-tauri -> target"
+
+      - name: Install frontend dependencies
+        run: npm install
+
+      - name: Build and release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: "静待 ${{ github.ref_name }}"
+          releaseBody: "下载下方安装包（.msi 或 .exe）即可安装。首次运行若出现 Windows SmartScreen 提示，点『更多信息 → 仍要运行』即可。"
+          releaseDraft: true
+          prerelease: false

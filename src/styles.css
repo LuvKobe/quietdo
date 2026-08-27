@@ -1,0 +1,353 @@
+/* ===== 静待 QuietDo · Apple 风格样式 ===== */
+:root {
+  --accent: #0A84FF;        /* Apple 系统蓝（深色模式） */
+  --danger: #FF453A;        /* Apple 系统红 */
+  --text-primary: rgba(255, 255, 255, 0.95);
+  --text-secondary: rgba(235, 235, 245, 0.6);
+  --text-tertiary: rgba(235, 235, 245, 0.3);
+  --hairline: rgba(255, 255, 255, 0.08);
+  --fill: rgba(120, 120, 128, 0.24);
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+          "PingFang SC", "Helvetica Neue", "Microsoft YaHei", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  /* 真实窗口为透明，body 透明以露出圆角外的桌面 */
+  background: transparent;
+  overflow: hidden;
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+/* ===== 悬浮窗口（毛玻璃），充满整个系统窗口 ===== */
+.widget {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  border-radius: 18px;
+  background: rgba(28, 28, 30, 0.72);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid var(--hairline);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+  position: relative;
+}
+
+/* ===== 窗口缩放手柄（无边框窗口）===== */
+.resizer {
+  position: absolute;
+  z-index: 50;
+}
+.resizer-n { top: 0; left: 10px; right: 10px; height: 6px; cursor: ns-resize; }
+.resizer-s { bottom: 0; left: 10px; right: 10px; height: 6px; cursor: ns-resize; }
+.resizer-e { top: 10px; bottom: 10px; right: 0; width: 6px; cursor: ew-resize; }
+.resizer-w { top: 10px; bottom: 10px; left: 0; width: 6px; cursor: ew-resize; }
+.resizer-nw { top: 0; left: 0; width: 12px; height: 12px; cursor: nwse-resize; }
+.resizer-ne { top: 0; right: 0; width: 12px; height: 12px; cursor: nesw-resize; }
+.resizer-sw { bottom: 0; left: 0; width: 12px; height: 12px; cursor: nesw-resize; }
+.resizer-se { bottom: 0; right: 0; width: 14px; height: 14px; cursor: nwse-resize; }
+/* 锁定窗口时禁用缩放手柄 */
+.widget.locked .resizer { cursor: default; pointer-events: none; }
+
+/* ===== 标题栏 ===== */
+.titlebar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--hairline);
+  flex-shrink: 0;
+  cursor: grab;
+}
+.titlebar.hidden { display: none; }
+.titlebar.locked { cursor: default; }
+
+.title-logo {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  display: block;
+  object-fit: contain;
+  -webkit-user-select: none;
+  user-select: none;
+  pointer-events: none;
+}
+.title-text {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.icon-btn {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+.icon-btn:hover { background: rgba(255, 255, 255, 0.08); color: var(--text-primary); }
+.icon-btn:active { transform: scale(0.92); }
+.icon-btn.close:hover { background: rgba(255, 69, 58, 0.9); color: #fff; }
+.icon-btn.locked { color: var(--accent); }
+
+/* ===== 输入区 ===== */
+.input-row {
+  display: flex;
+  gap: 10px;
+  padding: 14px 16px;
+  flex-shrink: 0;
+}
+.todo-input {
+  flex: 1;
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  background: rgba(118, 118, 128, 0.24);
+  color: var(--text-primary);
+  font-family: var(--font);
+  font-size: 14px;
+  outline: none;
+  -webkit-user-select: text;
+  user-select: text;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.todo-input::placeholder { color: var(--text-tertiary); }
+.todo-input:focus {
+  border-color: var(--accent);
+  background: rgba(118, 118, 128, 0.32);
+}
+.add-btn {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 22px;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: filter 0.15s ease, transform 0.1s ease;
+}
+.add-btn:hover { filter: brightness(1.1); }
+.add-btn:active { transform: scale(0.9); }
+
+/* ===== 任务列表 ===== */
+.todo-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 10px 14px;
+  list-style: none;
+}
+.todo-list::-webkit-scrollbar { width: 8px; }
+.todo-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 4px;
+}
+.todo-list::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.24); }
+
+.empty-hint {
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 13px;
+  padding: 40px 0;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: 12px;
+  transition: background 0.15s ease;
+  animation: slideIn 0.22s ease;
+}
+.todo-item:hover { background: rgba(255, 255, 255, 0.05); }
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.check {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 12px;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.1s ease;
+}
+.check:active { transform: scale(0.85); }
+.todo-item.done .check {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.todo-text {
+  flex: 1;
+  font-size: 14.5px;
+  color: var(--text-primary);
+  line-height: 1.35;
+  word-break: break-word;
+  transition: color 0.18s ease;
+}
+.todo-item.done .todo-text {
+  color: var(--text-tertiary);
+  text-decoration: line-through;
+}
+
+.del-btn {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: var(--danger);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  opacity: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.15s ease, background 0.15s ease, transform 0.1s ease;
+}
+.todo-item:hover .del-btn { opacity: 1; }
+.del-btn:hover { background: rgba(255, 69, 58, 0.18); }
+.del-btn:active { transform: scale(0.85); }
+.todo-item.done .del-btn { color: var(--text-tertiary); }
+
+/* ===== 设置面板 ===== */
+.settings-panel {
+  position: absolute;
+  top: 52px;
+  right: 14px;
+  width: 250px;
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(44, 44, 46, 0.9);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border: 1px solid var(--hairline);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  z-index: 10;
+  transform-origin: top right;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.settings-panel.hidden {
+  opacity: 0;
+  transform: scale(0.94);
+  pointer-events: none;
+}
+.settings-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 14px;
+}
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 34px;
+  margin-bottom: 6px;
+}
+.setting-label { font-size: 13.5px; color: var(--text-primary); }
+.opacity-value { font-size: 13px; color: var(--text-secondary); min-width: 38px; text-align: right; }
+
+.opacity-row { flex-direction: column; align-items: stretch; gap: 8px; }
+.opacity-head { display: flex; justify-content: space-between; align-items: center; }
+
+/* iOS 风格滑块 */
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--fill);
+  outline: none;
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+.slider::-moz-range-thumb {
+  width: 20px; height: 20px; border: none;
+  border-radius: 50%; background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4); cursor: pointer;
+}
+
+/* iOS 风格 Toggle 开关 */
+.toggle {
+  position: relative;
+  width: 44px;
+  height: 26px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle .track {
+  position: absolute;
+  inset: 0;
+  border-radius: 13px;
+  background: var(--fill);
+  transition: background 0.22s ease;
+}
+.toggle .knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  transition: transform 0.22s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+.toggle input:checked + .track { background: #30D158; }
+.toggle input:checked ~ .knob { transform: translateX(18px); }
+
+.panel-tip {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--hairline);
+  font-size: 11.5px;
+  color: var(--text-tertiary);
+  text-align: center;
+}
