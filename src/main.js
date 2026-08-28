@@ -76,6 +76,9 @@ function render() {
     const text = document.createElement("span");
     text.className = "todo-text";
     text.textContent = todo.text;
+    text.title = "双击编辑";
+    // 双击进入编辑
+    text.addEventListener("dblclick", () => startEdit(todo, li, text));
 
     const del = document.createElement("button");
     del.className = "del-btn";
@@ -115,6 +118,37 @@ function deleteTodo(id) {
   todos = todos.filter((t) => t.id !== id);
   saveTodos();
   render();
+}
+
+// 双击编辑任务文字：把文字替换成输入框，回车/失焦保存，Esc 取消
+function startEdit(todo, li, textEl) {
+  const input = document.createElement("input");
+  input.type = "text";
+  input.className = "todo-edit-input";
+  input.value = todo.text;
+  input.maxLength = 200;
+
+  li.replaceChild(input, textEl);
+  input.focus();
+  input.select();
+
+  let finished = false;
+  const commit = (save) => {
+    if (finished) return;
+    finished = true;
+    if (save) {
+      const val = input.value.trim();
+      if (val) todo.text = val; // 非空才更新，空则保持原值
+      saveTodos();
+    }
+    render();
+  };
+
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") commit(true);
+    else if (e.key === "Escape") commit(false);
+  });
+  input.addEventListener("blur", () => commit(true));
 }
 
 // ===== 应用配置到界面 =====

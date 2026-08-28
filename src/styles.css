@@ -225,6 +225,22 @@ html, body {
   text-decoration: line-through;
 }
 
+/* 行内编辑输入框 */
+.todo-edit-input {
+  flex: 1;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: rgba(118, 118, 128, 0.32);
+  color: var(--text-primary);
+  font-family: var(--font);
+  font-size: 14.5px;
+  outline: none;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
 .del-btn {
   width: 28px;
   height: 28px;
