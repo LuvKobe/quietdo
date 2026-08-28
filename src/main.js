@@ -10,12 +10,13 @@ let config = {
   showTitleBar: true,
   autoStart: false,
   locked: false,
+  alwaysOnTop: false,
 };
 
 // ===== DOM 引用 =====
 let widget, titlebar, todoInput, addBtn, todoList;
 let settingsBtn, settingsPanel, lockBtn, closeBtn;
-let opacitySlider, opacityValue, titleBarToggle, autoStartToggle;
+let opacitySlider, opacityValue, titleBarToggle, autoStartToggle, alwaysOnTopToggle;
 
 // ===== 持久化 =====
 async function loadData() {
@@ -126,6 +127,9 @@ function applyConfig() {
   titlebar.classList.toggle("hidden", !config.showTitleBar);
 
   autoStartToggle.checked = config.autoStart;
+  alwaysOnTopToggle.checked = config.alwaysOnTop;
+  // 按配置应用窗口置顶
+  invoke("set_always_on_top", { enabled: config.alwaysOnTop }).catch(() => {});
 
   lockBtn.textContent = config.locked ? "🔒" : "🔓";
   lockBtn.classList.toggle("locked", config.locked);
@@ -162,6 +166,17 @@ function bindEvents() {
       await invoke("set_autostart", { enabled: config.autoStart });
     } catch (e) {
       console.error("设置开机自启失败", e);
+    }
+    saveConfig();
+  });
+
+  // 窗口置顶
+  alwaysOnTopToggle.addEventListener("change", async () => {
+    config.alwaysOnTop = alwaysOnTopToggle.checked;
+    try {
+      await invoke("set_always_on_top", { enabled: config.alwaysOnTop });
+    } catch (e) {
+      console.error("设置窗口置顶失败", e);
     }
     saveConfig();
   });
@@ -225,6 +240,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   opacityValue = document.getElementById("opacityValue");
   titleBarToggle = document.getElementById("titleBarToggle");
   autoStartToggle = document.getElementById("autoStartToggle");
+  alwaysOnTopToggle = document.getElementById("alwaysOnTopToggle");
 
   await loadData();
   applyConfig();

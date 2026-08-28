@@ -76,6 +76,12 @@ fn close_app(window: WebviewWindow) {
     let _ = window.close();
 }
 
+/// 设置窗口是否始终置顶。
+#[tauri::command]
+fn set_always_on_top(window: WebviewWindow, enabled: bool) -> Result<(), String> {
+    window.set_always_on_top(enabled).map_err(|e| e.to_string())
+}
+
 /// 设置开机自启（注册/移除）。
 #[tauri::command]
 fn set_autostart(app: AppHandle, enabled: bool) -> Result<(), String> {
@@ -112,6 +118,7 @@ pub fn run() {
             start_drag,
             start_resize,
             close_app,
+            set_always_on_top,
             set_autostart,
             get_autostart
         ])
