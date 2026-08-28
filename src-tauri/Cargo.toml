@@ -1,6 +1,6 @@
 [package]
 name = "quietdo"
-version = "0.1.0"
+version = "0.1.1"
 description = "静待 QuietDo - 极简桌面悬浮待办"
 authors = ["you"]
 edition = "2021"
