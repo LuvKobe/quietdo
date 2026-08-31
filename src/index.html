@@ -24,9 +24,10 @@
       <div class="titlebar" id="titlebar">
         <img class="title-logo" src="/assets/logo.png" alt="静待" />
         <span class="title-text">静待</span>
+        <button class="icon-btn" id="minBtn" title="最小化到托盘">—</button>
         <button class="icon-btn" id="lockBtn" title="锁定/解锁窗口">🔓</button>
         <button class="icon-btn" id="settingsBtn" title="外观设置">⚙</button>
-        <button class="icon-btn close" id="closeBtn" title="关闭">✕</button>
+        <button class="icon-btn close" id="closeBtn" title="退出">✕</button>
       </div>
 
       <!-- 输入区 -->
@@ -78,6 +79,18 @@
         </div>
 
         <div class="panel-tip">拖动标题栏可移动窗口</div>
+      </div>
+
+      <!-- 首次收进托盘的提示 -->
+      <div class="tray-tip hidden" id="trayTip">
+        <div class="tray-tip-card">
+          <div class="tray-tip-title">静待仍在后台运行</div>
+          <div class="tray-tip-text">
+            窗口已收进右下角<strong>系统托盘</strong>。<br />
+            单击托盘图标可重新打开，右键可退出。
+          </div>
+          <button class="tray-tip-btn" id="trayTipOk">知道了</button>
+        </div>
       </div>
     </div>
   </body>

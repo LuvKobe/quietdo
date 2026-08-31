@@ -11,12 +11,14 @@ let config = {
   autoStart: false,
   locked: false,
   alwaysOnTop: false,
+  trayTipShown: false,
 };
 
 // ===== DOM 引用 =====
 let widget, titlebar, todoInput, addBtn, todoList;
-let settingsBtn, settingsPanel, lockBtn, closeBtn;
+let settingsBtn, settingsPanel, lockBtn, closeBtn, minBtn;
 let opacitySlider, opacityValue, titleBarToggle, autoStartToggle, alwaysOnTopToggle;
+let trayTip, trayTipOk;
 
 // ===== 持久化 =====
 async function loadData() {
@@ -118,6 +120,17 @@ function deleteTodo(id) {
   todos = todos.filter((t) => t.id !== id);
   saveTodos();
   render();
+}
+
+// 收进托盘：首次弹出提示（用户点"知道了"后隐藏并记住），之后直接隐藏
+function hideToTray() {
+  if (!config.trayTipShown) {
+    config.trayTipShown = true;
+    saveConfig();
+    trayTip.classList.remove("hidden");
+  } else {
+    invoke("hide_window");
+  }
 }
 
 // 双击编辑任务文字：把文字替换成输入框，回车/失焦保存，Esc 取消
@@ -237,9 +250,16 @@ function bindEvents() {
     applyConfig();
   });
 
-  // 关闭按钮：退出应用
-  closeBtn.addEventListener("click", () => {
-    invoke("close_app");
+  // 最小化按钮：收进托盘
+  minBtn.addEventListener("click", () => hideToTray());
+
+  // 关闭按钮：退出程序
+  closeBtn.addEventListener("click", () => invoke("close_app"));
+
+  // 首次提示的"知道了"：关闭提示并真正隐藏
+  trayTipOk.addEventListener("click", () => {
+    trayTip.classList.add("hidden");
+    invoke("hide_window");
   });
 
   // 标题栏拖动（调用系统窗口拖动；锁定或点按钮时不触发）
@@ -270,6 +290,9 @@ window.addEventListener("DOMContentLoaded", async () => {
   settingsPanel = document.getElementById("settingsPanel");
   lockBtn = document.getElementById("lockBtn");
   closeBtn = document.getElementById("closeBtn");
+  minBtn = document.getElementById("minBtn");
+  trayTip = document.getElementById("trayTip");
+  trayTipOk = document.getElementById("trayTipOk");
   opacitySlider = document.getElementById("opacitySlider");
   opacityValue = document.getElementById("opacityValue");
   titleBarToggle = document.getElementById("titleBarToggle");
